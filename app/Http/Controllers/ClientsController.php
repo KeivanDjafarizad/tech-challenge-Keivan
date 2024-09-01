@@ -42,7 +42,7 @@ class ClientsController extends Controller
         $client->address = $request->get('address');
         $client->city = $request->get('city');
         $client->postcode = $request->get('postcode');
-        
+
         auth()->user()->clients()->save($client);
 
         return $client;
@@ -50,11 +50,12 @@ class ClientsController extends Controller
 
     public function destroy($client)
     {
-
         $client = Client::where('id', $client)
             ->where('user_id', auth()->id())
             ->firstOrFail();
 
-        return 'Deleted';
+        $client->delete();
+
+        return response()->json(['message' => 'Client deleted'], 204);
     }
 }
