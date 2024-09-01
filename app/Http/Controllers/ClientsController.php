@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Client;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ClientsController extends Controller
 {
@@ -35,6 +37,25 @@ class ClientsController extends Controller
 
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'name' => 'nullable|string|max:190',
+            'email' => [
+                Rule::requiredIf(empty($request->phone)),
+                'nullable',
+                'email',
+            ],
+            'phone' => [
+                Rule::requiredIf(empty($request->email)),
+                'nullable',
+                'string',
+                'regex:/^[0-9+\s]*$/'
+            ],
+        ], [
+            'email.required' => 'The email or phone field is required.',
+            'phone.required' => 'The email or phone field is required.',
+            'phone.regex' => 'The phone field must be a valid phone number and contain only numbers, spaces and + sign.',
+        ]);
+
         $client = new Client;
         $client->name = $request->get('name');
         $client->email = $request->get('email');

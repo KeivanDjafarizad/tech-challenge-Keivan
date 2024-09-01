@@ -3,6 +3,11 @@
         <h1 class="mb-6">Clients -> Add New Client</h1>
 
         <div class="max-w-lg mx-auto">
+            <div v-if="errors.length > 0" class="alert alert-danger">
+                <ul>
+                    <li v-for="error in errors">{{ error }}</li>
+                </ul>
+            </div>
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" id="name" class="form-control" v-model="client.name">
@@ -53,15 +58,43 @@ export default {
                 address: '',
                 city: '',
                 postcode: '',
-            }
+            },
+            errors: [],
         }
     },
 
     methods: {
         storeClient() {
+            this.errors = [];
+
+            if(this.client.phone === '' && this.client.email === '') {
+                this.errors.push('Phone or Email are required');
+            }
+
+            if(this.client.phone !== '') {
+                if(new RegExp(/^[0-9+\s]*$/).test(this.client.phone) === false) {
+                    this.errors.push('Phone must contain only numbers, spaces and + sign');
+                }
+            }
+
+            if(this.client.email !== '') {
+                if(new RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/).test(this.client.email) === false) {
+                    this.errors.push('Email is not valid');
+                }
+            }
+
+            if(this.errors.length > 0) {
+                return;
+            }
+
             axios.post('/clients', this.client)
                 .then((data) => {
                     window.location.href = data.data.url;
+                })
+                .catch((error) => {
+                    for(const [_, value] of Object.entries(error.response.data.errors)) {
+                        this.errors.push(value[0]);
+                    }
                 });
         }
     }
