@@ -33,6 +33,9 @@ class ClientsController extends Controller
                 'bookings' => function ($query) {
                     $query->orderBy('created_at', 'desc');
                 },
+                'journals' => function ($query) {
+                    $query->orderBy('entry_date', 'desc');
+                },
             ])
             ->firstOrFail();
 

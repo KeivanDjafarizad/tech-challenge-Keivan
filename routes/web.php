@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\JournalsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,7 +29,6 @@ Route::group(['middleware' => 'auth', 'prefix' => 'clients'], function () {
     Route::get('/{client}', 'ClientsController@show');
     Route::delete('/{client}', 'ClientsController@destroy');
 
-    Route::get('/{client}/journals', 'JournalsController@index');
-    Route::post('/{client}/journals', 'JournalsController@store');
-    Route::delete('/{client}/journals/{journal}', 'JournalsController@destroy');
+    Route::post('/{client}/journals', [JournalsController::class, 'store']);
+    Route::delete('/{client}/journals/{journal}', [JournalsController::class, 'destroy']);
 });
