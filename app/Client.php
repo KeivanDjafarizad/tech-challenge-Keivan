@@ -10,7 +10,7 @@ class Client extends Model
         'name',
         'email',
         'phone',
-        'adress',
+        'address',
         'city',
         'postcode',
     ];
@@ -22,6 +22,11 @@ class Client extends Model
     public function bookings()
     {
         return $this->hasMany(Booking::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function getBookingsCountAttribute()
