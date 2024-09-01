@@ -50,7 +50,7 @@
                             </thead>
                             <tbody>
                                 <tr v-for="booking in client.bookings" :key="booking.id">
-                                    <td>{{ booking.start }} - {{ booking.end }}</td>
+                                    <td>{{ formatBooking(booking.start, booking.end) }} </td>
                                     <td>{{ booking.notes }}</td>
                                     <td>
                                         <button class="btn btn-danger btn-sm" @click="deleteBooking(booking)">Delete</button>
@@ -79,6 +79,7 @@
 
 <script>
 import axios from 'axios';
+import moment from "moment";
 
 export default {
     name: 'ClientShow',
@@ -98,6 +99,12 @@ export default {
 
         deleteBooking(booking) {
             axios.delete(`/bookings/${booking.id}`);
+        },
+
+        formatBooking(start, end) {
+            const startDate = new Date(start);
+            const endDate = new Date(end);
+            return moment(startDate).format('dddd D MMMM YYYY') + ', ' + moment(startDate).format('hh:mm') + ' to ' + moment(endDate).format('hh:mm');
         }
     }
 }
